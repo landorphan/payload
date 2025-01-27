@@ -1,16 +1,20 @@
 import type {
   CollectionSlug,
+  Field,
   FieldAffectingData,
+  FilterOptions,
   RadioField,
   SanitizedConfig,
   TextField,
   User,
+  Where,
 } from 'payload'
 
 import { validateUrl, validateUrlMinimal } from '../../../lexical/utils/url.js'
 
 export const getBaseFields = (
   config: SanitizedConfig,
+  documentFilterOptions?: FilterOptions,
   enabledCollections?: CollectionSlug[],
   disabledCollections?: CollectionSlug[],
   maxDepth?: number,
@@ -95,7 +99,7 @@ export const getBaseFields = (
       condition: ({ linkType }) => linkType !== 'internal',
     }
 
-    baseFields.push({
+    const doc: Field = {
       name: 'doc',
       admin: {
         condition: ({ linkType }) => {
@@ -114,12 +118,24 @@ export const getBaseFields = (
               }
               return true
             }
-          : null,
+          : (props) => {
+              console.log(`Link Feature filterOptions Called: ${props.relationTo}`)
+              let result: boolean | Promise<boolean | Where> | Where = true
+              console.log(`Determining if Document Filter applies: ${!!documentFilterOptions}`)
+              if (documentFilterOptions && typeof documentFilterOptions === 'function') {
+                console.log(`Document Filter applies: ${!!documentFilterOptions}`)
+                result = documentFilterOptions(props)
+                console.log(`Document Filter result: ${result}`)
+              }
+              return result
+            },
       label: ({ t }) => t('fields:chooseDocumentToLink'),
       maxDepth,
       relationTo: enabledRelations,
       required: true,
-    })
+    }
+
+    baseFields.push(doc)
   }
 
   baseFields.push({

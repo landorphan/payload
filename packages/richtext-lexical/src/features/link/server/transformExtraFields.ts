@@ -1,4 +1,10 @@
-import type { CollectionSlug, Field, FieldAffectingData, SanitizedConfig } from 'payload'
+import type {
+  CollectionSlug,
+  Field,
+  FieldAffectingData,
+  FilterOptions,
+  SanitizedConfig,
+} from 'payload'
 
 import { getBaseFields } from './baseFields.js'
 
@@ -14,12 +20,14 @@ export function transformExtraFields(
     | Field[]
     | null,
   config: SanitizedConfig,
+  documentFilterOptions?: FilterOptions,
   enabledCollections?: CollectionSlug[],
   disabledCollections?: CollectionSlug[],
   maxDepth?: number,
 ): Field[] {
   const baseFields: FieldAffectingData[] = getBaseFields(
     config,
+    documentFilterOptions,
     enabledCollections,
     disabledCollections,
     maxDepth,
