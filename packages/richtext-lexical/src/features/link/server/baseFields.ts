@@ -126,13 +126,9 @@ export const getBaseFields = (
               return true
             }
           : (props) => {
-              console.log(`Link Feature filterOptions Called: ${props.relationTo}`)
               let result: boolean | Promise<boolean | Where> | Where = true
-              console.log(`Determining if Document Filter applies: ${!!documentFilterOptions}`)
               if (documentFilterOptions && typeof documentFilterOptions === 'function') {
-                console.log(`Document Filter applies: ${!!documentFilterOptions}`)
                 result = documentFilterOptions(props)
-                console.log(`Document Filter result: ${result}`)
               }
               return result
             },
