@@ -4,6 +4,7 @@ import type {
   Field,
   FieldAffectingData,
   FieldSchemaMap,
+  FilterOptions,
   SanitizedConfig,
 } from 'payload'
 
@@ -56,6 +57,7 @@ export type LinkFeatureServerProps = {
         defaultFields: FieldAffectingData[]
       }) => (Field | FieldAffectingData)[])
     | Field[]
+  filterOptions?: FilterOptions
   /**
    * Sets a maximum population depth for the internal doc default field of link, regardless of the remaining depth when the field is reached.
    * This behaves exactly like the maxDepth properties of relationship and upload fields.
@@ -79,6 +81,7 @@ export const LinkFeature = createServerFeature<
     const _transformedFields = transformExtraFields(
       props.fields ? props.fields : null,
       _config,
+      props.filterOptions,
       props.enabledCollections,
       props.disabledCollections,
       props.maxDepth,
